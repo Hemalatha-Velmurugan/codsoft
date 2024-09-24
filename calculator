@@ -1,0 +1,93 @@
+import tkinter as tk
+from tkinter import messagebox
+
+# Enhanced Calculator with improved visual appeal
+class Calculator:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Elegant Calculator")
+        self.root.geometry("400x600")
+        self.root.config(bg="#2c3e50")  # Dark background for elegance
+        self.root.minsize(400, 600)
+        self.root.resizable(True, True)  # Allow resizing
+
+        # Calculator expression
+        self.expression = ""
+        self.input_text = tk.StringVar()
+
+        # Input frame for display
+        input_frame = tk.Frame(self.root, bd=5, bg="#34495e", relief=tk.FLAT)
+        input_frame.pack(side=tk.TOP, fill="both", padx=10, pady=20)
+
+        # Input field (calculator display)
+        self.input_field = tk.Entry(input_frame, font=('Helvetica', 24, 'bold'), textvariable=self.input_text,
+                                    bd=0, insertwidth=4, bg="#2c3e50", fg="white", justify='right')
+        self.input_field.grid(row=0, column=0)
+        self.input_field.pack(ipady=15, fill="both")  # Internal padding for better height
+
+        # Button frame
+        btns_frame = tk.Frame(self.root, bg="#2c3e50")
+        btns_frame.pack(fill="both", expand=True)
+
+        # Button layout (including operations)
+        buttons = [
+            ['7', '8', '9', '/'],
+            ['4', '5', '6', '*'],
+            ['1', '2', '3', '-'],
+            ['0', '.', '=', '+']
+        ]
+
+        # Button styling: dynamic creation with rounded buttons and modern design
+        for i, row in enumerate(buttons):
+            for j, button_text in enumerate(row):
+                if button_text == '=':
+                    btn = tk.Button(btns_frame, text=button_text, fg='white', bg='#27ae60', font=('Helvetica', 18, 'bold'),
+                                    width=10, height=3, bd=0, command=self.evaluate, relief=tk.RAISED, overrelief=tk.FLAT)
+                else:
+                    btn = tk.Button(btns_frame, text=button_text, fg='white', bg='#34495e', font=('Helvetica', 18, 'bold'),
+                                    width=10, height=3, bd=0, command=lambda x=button_text: self.btn_click(x), relief=tk.RAISED, overrelief=tk.FLAT)
+                btn.grid(row=i, column=j, padx=5, pady=5, sticky="nsew")
+
+        # Clear and Exit buttons with visual distinction
+        clear_btn = tk.Button(btns_frame, text="Clear", fg='white', bg='#e74c3c', font=('Helvetica', 18, 'bold'),
+                              bd=0, command=self.clear, relief=tk.RAISED, overrelief=tk.FLAT)
+        clear_btn.grid(row=5, column=0, columnspan=2, padx=5, pady=5, sticky="nsew")
+
+        exit_btn = tk.Button(btns_frame, text="Exit", fg='white', bg='#c0392b', font=('Helvetica', 18, 'bold'),
+                             bd=0, command=self.exit_calculator, relief=tk.RAISED, overrelief=tk.FLAT)
+        exit_btn.grid(row=5, column=2, columnspan=2, padx=5, pady=5, sticky="nsew")
+
+        # Make buttons expandable and adapt to window size
+        for i in range(6):
+            btns_frame.grid_rowconfigure(i, weight=1)
+            btns_frame.grid_columnconfigure(i, weight=1)
+
+    # Handle button click
+    def btn_click(self, item):
+        self.expression += str(item)
+        self.input_text.set(self.expression)
+
+    # Clear display
+    def clear(self):
+        self.expression = ""
+        self.input_text.set("")
+
+    # Evaluate the expression
+    def evaluate(self):
+        try:
+            result = str(eval(self.expression))  # Perform the calculation
+            self.input_text.set(result)
+            self.expression = result  # Store result for further calculations
+        except:
+            messagebox.showerror("Error", "Invalid Input")
+            self.expression = ""
+
+    # Exit the calculator
+    def exit_calculator(self):
+        self.root.destroy()
+
+# Run the enhanced calculator with improved visuals
+if __name__ == "__main__":
+    root = tk.Tk()
+    calculator = Calculator(root)
+    root.mainloop()
